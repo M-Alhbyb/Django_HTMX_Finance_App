@@ -8,7 +8,6 @@ Update Transaction
   hx-post="{% url 'update-transaction' transaction.pk %}" 
   hx-push-url="/transactions"
   >
-  {% csrf_token %} 
   {% include "tracker/partials/transaction_form.html" %}
 
   <!-- BUTTON -->

@@ -2,13 +2,6 @@
 {% load partials %}
 {% load humanize %}
 
- <button
-    id="filter-toggle"
-    class="btn btn-outline btn-success mb-4 block md:hidden w-full"
-    style="background-color: #00d390;"
-  >
-    Show Filters
-  </button>
 
 <div
   class="flex flex-col-reverse md:grid md:grid-cols-4 md:gap-4"
@@ -195,9 +188,9 @@
 
   </div>
 
-  <div class="col-span-1 hidden md:block" id="formContainer">
+  <div class="col-span-1" id="formContainer">
     <form
-    class="md:pt-8"
+    class="md:pt-8 hidden md:block"
       hx-get="{% url 'transactions-list' %}"
       hx-target="#transaction-container"
       hx-swap="outerHTML"
@@ -244,26 +237,6 @@
       </button>
     </form>
   </div>
-  
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggleBtn = document.getElementById("filter-toggle");
-      const form = document.getElementById("formContainer");
-      
-      if (!toggleBtn || !form) {
-        console.error("Missing #filter-toggle or #formContainer element.");
-        return;
-      }
-      
-      let visible = false;
-      
-      toggleBtn.addEventListener("click", () => {
-        visible = !visible;
-        form.classList.toggle("hidden", !visible);
-        toggleBtn.textContent = visible ? "Hide Filters" : "Show Filters";
-      });
-    });
-  </script>
 </div>
 
 
@@ -297,4 +270,3 @@
     toggleBtn.textContent = visible ? "Hide Filters" : "Show Filters";
   });
 </script> -->
-

@@ -16,8 +16,37 @@
     </svg>
     Transactions List
   </h1>
+
+ <button
+    id="filter-toggle"
+    class="btn btn-outline btn-success mb-4 block md:hidden w-full"
+    style="background-color: #00d390;"
+  >
+    Show Filters
+  </button>
   {% include "tracker/partials/transactions_container.html" %}
 </div>
 
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("filter-toggle");
+    const form = document.getElementById("filterform");
+
+    if (!toggleBtn || !form) {
+      console.error("Missing #filter-toggle or #formContainer element.");
+      return;
+    }
+
+    let visible = false;
+
+    toggleBtn.addEventListener("click", () => {
+      visible = !visible;
+      form.classList.toggle("hidden", !visible);
+      toggleBtn.textContent = visible ? "Hide Filters" : "Show Filters";
+    });
+  });
+</script>
+
 {% endblock %}
+

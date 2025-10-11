@@ -143,7 +143,7 @@ INTERNAL_IPS = [
     # ...
 ]
 
-CSRF_TRUSTED_ORIGINS=['pasha-finance-app.onrender.com/', '*']
+CSRF_TRUSTED_ORIGINS=['https://pasha-finance-app.onrender.com/']
 
 AUTH_USER_MODEL = "tracker.User"
 LOGIN_REDIRECT_URL = "index"

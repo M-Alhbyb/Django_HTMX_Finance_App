@@ -1,0 +1,279 @@
+{% load widget_tweaks %} 
+{% load partials %}
+{% load humanize %}
+
+ <button
+    id="filter-toggle"
+    class="btn btn-outline btn-success mb-4 block md:hidden w-full"
+    style="background-color: #00d390;"
+  >
+    Show Filters
+  </button>
+
+<div
+  class="flex flex-col-reverse md:grid md:grid-cols-4 md:gap-4"
+  id="transaction-container"
+>
+  <div class="col-span-3">   
+    <h1 class="mt-4 prose prose-2xl text-white mb-0 md:mb-0 text-center md:text-left">Totals</h1>
+    <div class=" max-w-full overflow-x-auto">
+      <table class="table w-full min-w-max">
+        <thead class="text-xs text-white uppercase">
+          <tr>
+            <th>Total Income</th>
+            <th>Total Expenses</th>
+            <th>Net Income</th>
+          </tr>
+        </thead>
+        <tbody class="border-white border-t-2 border-b-2">
+          <tr>
+            <td style="color: #00d390; font-weight: bolder">
+              ${{ total_income|floatformat:2|intcomma }}
+            </td>
+            <td style="color: #ff3f33; font-weight: bolder">
+              ${{ total_expenses|floatformat:2|intcomma }}
+            </td>
+            <td style="font-weight: bolder">
+              ${{ net_income|floatformat:2|intcomma }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="md:flex md:justify-between md:items-center mt-8">
+      <h1 class="prose prose-2xl text-white mb-4 md:mb-0 text-center md:text-left">Transactions</h1>
+      <div class="flex gap-2">
+        <a
+        title="Create Transaction"
+        hx-get="{% url 'create-transaction' %}"
+        hx-push-url="true"
+        hx-target="#transaction-block"
+        class="cursor-pointer "
+        style="flex: 1;">
+
+      <button class="btn btn-success px-2 text-xs w-full" style="background-color: #00d390;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 border-r-2 pr-2" style="box-sizing: content-box;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Create
+      </button>
+      </a>
+      <a 
+      class="cursor-pointer" 
+      title="Download Transactions File" 
+      hx-get="{% url 'export' %}" 
+      hx-include="#filterform"
+      style="flex: 1;"
+      >
+
+      <button class="btn btn-success px-2 text-xs w-full" style="background-color: #00d390;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 border-r-2 pr-2" style="box-sizing: content-box;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Download
+      </button>
+       </a>
+        <a
+        title="Import Transactions"
+        hx-get="{% url 'import' %}"
+        hx-push-url="true"
+        hx-target="#transaction-block"
+        class="cursor-pointer"
+        style="flex: 1;"
+        >
+        <button class="btn btn-success px-2 text-xs w-full" style="background-color: #00d390;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"  class="size-4 pr-2 border-r-2" style="box-sizing: content-box;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+          </svg>
+          Import
+        </button>
+
+      </a>
+      </div>
+    </div>
+
+
+    <div class="max-w-full overflow-x-auto">   
+    {% if transactions %}
+    <table class="table w-full min-w-max">
+      <thead class="text-s text-white uppercase">
+        <tr>
+          <th class="px-6 py-3">Date</th>
+          <th class="px-6 py-3">Category</th>
+          <th class="px-6 py-3">Type</th>
+          <th class="px-6 py-3">Amount</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="text-white">
+        {% partialdef transactions-partial inline=True %}
+         {% for transaction in transactions %}
+            {% if forloop.last and transactions.has_next %}
+            <tr class="border-t-2 border-white"
+                hx-get="{% url 'get-transactions' %}?page={{transactions.next_page_number}}"    
+                hx-trigger="revealed"
+                hx-swap="afterend"
+                hx-include="#filterform"
+                hx-indicator="#spinner"
+            >
+            {% else %}
+            <tr class="border-t-2 border-white">
+            {% endif %}
+              <td>{{ transaction.date }}</td>
+              <td>{{ transaction.category }}</td>
+              {% if transaction.type == "income" %}
+              <td style="color: #00d390">{{ transaction.type }}</td>
+              {% else %}
+              <td style="color: #ff3f33">{{ transaction.type }}</td>
+              {% endif %}
+              <td>${{ transaction.amount }}</td>
+              <td class="flex items-center">
+                {% if transaction.pk %}
+                <a
+                  hx-get="{% url 'update-transaction' transaction.pk %}"
+                  hx-push-url="true"
+                  hx-target="#transaction-block"
+                  class="cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6 mr-2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                    />
+                  </svg>
+                </a>
+                <a
+                  hx-delete="{% url 'delete-transaction' transaction.pk %}"
+                  hx-confirm="Delete The Transaction?"
+                  hx-push-url="true"
+                  hx-target="#transaction-block"
+                  class="cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+        {% endpartialdef %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5" class="text-center py-4">
+            <span id="spinner" class="htmx-indicator loading loading-spinner loading-lg text-success"></span>
+          </td>
+        </tr>
+        
+      </tfoot>
+    </table>
+    </div>
+    {% else %}
+    <h3 class="text-white">No Transactions</h3>
+    {% endif %}
+
+  </div>
+
+  <div class="col-span-1 hidden md:block" id="formContainer">
+    <form
+    class="md:pt-8"
+      hx-get="{% url 'transactions-list' %}"
+      hx-target="#transaction-container"
+      hx-swap="outerHTML"
+      id="filterform"
+    >
+    <!-- Type choosing label -->
+      <div class="form-control">
+        {{ filter.form.transaction_type|add_label_class:"label text-white mb-4"}}
+      </div>
+      <!-- Type choosing field -->
+      <div class="mb-4 form-control">
+        {% render_field filter.form.transaction_type class="select select-success bg-gray-50 text-gray-900 px-6 w-full" %}
+      </div>
+      <!-- Start Date Label -->
+      <div class="form-control">
+        {{ filter.form.start_date|add_label_class:"label text-white mb-4" }}
+      </div>
+      <!-- Start Date Field -->
+      <div class="mb-4 form-control">
+        {% render_field filter.form.start_date class="input select-success bg-gray-50 text-gray-900 px-6 w-full" %}
+      </div>
+      <!-- End Date Label -->
+      <div class="form-control">
+        {{ filter.form.end_date|add_label_class:"label text-white mb-4" }}
+      </div>
+      <!-- End Date Field -->
+      <div class="mb-4 form-control">
+        {% render_field filter.form.end_date class="input select-success bg-gray-50 text-gray-900 px-6 w-full" %}
+      </div>
+      <!-- Category choosing label -->
+      <div class="form-control">
+          {{ filter.form.category|add_label_class:"label text-white mb-4" }}
+        </div>
+      <!-- Category choosing field -->
+      <div class="mb-4 form-control grid grid-cols-2 gap-2 " id="test">
+        {% for category in filter.form.category %}
+          <div class="btn w-full text-left px-2" style="justify-content: start;">
+            {{ category  }}
+          </div>
+        {% endfor %}
+      </div>
+      <button class="btn btn-success px-6 w-full" style="background-color: #00d390">
+        Filter
+      </button>
+    </form>
+  </div>
+</div>
+
+
+{% if messages %}
+  <div class="toast toast-top toast-center" >
+    {% for message in messages %}
+      <div class="alert alert-success">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg>
+        <span>{{ message }}</span>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    setTimeout(() => {
+      document.querySelector('.toast').style.display = 'none';
+    }, 3000);
+  </script>
+{% endif %}
+
+<script>
+  const toggleBtn = document.getElementById("filter-toggle");
+  const form = document.getElementById("formContainer");
+  let visible = false;
+
+  toggleBtn.addEventListener("click", () => {
+    visible = !visible;
+    form.classList.toggle("hidden", !visible);
+    toggleBtn.textContent = visible ? "Hide Filters" : "Show Filters";
+  });
+</script>

@@ -1,0 +1,43 @@
+{% load widget_tweaks %}
+
+<div class="col-span-1">
+  <!-- TYPE -->
+  <div class="mb-2 form-control">
+    {{ form.type|add_label_class:"label text-white" }}
+  </div>
+  <div class="mb-4 form-control text-black">
+    {% render_field form.type class="px-4 input" style="display: block; width:100%;"%}
+  </div>
+
+  <!-- AMOUNT -->
+  <div class="mb-2 form-control">
+    {{ form.amount|add_label_class:"label text-white" }}
+  </div>
+  <div class="mb-4 form-control text-black">
+    {% render_field form.amount class="px-4 input" style="display: block; width:100%;" min="0.01" %}
+  </div>
+
+  <!-- DATE -->
+  <div class="mb-2 form-control">
+    {{ form.date|add_label_class:"label text-white" }}
+  </div>
+  <div class="mb-4 form-control text-black">
+    {% render_field form.date class="px-4 input" style="display: block; width: 100%;"%}
+  </div>
+</div>
+<div class="col-span-1">
+  <!-- CATEGORY -->
+  <div class="mb-2 form-control" style="display: block; width: 100%">
+    {{ form.category|add_label_class:"label text-white" }}
+  </div>
+  <div class="mb-4 form-control grid grid-cols-2 gap-2 ">
+    {% for category in form.category %}
+      <div class="btn w-full text-left px-2" style="justify-content: start;">
+        {{category}}
+      </div>
+    {% endfor %}
+  </div>
+  <!-- <div class="mb-4 form-control" style="display: block; width: 100%">
+    {% render_field form.category class="px-4 text-green-500 bolder-gray-300 rounded focus:ring-green-500" style="apperance:radio;"%}
+  </div> -->
+</div>

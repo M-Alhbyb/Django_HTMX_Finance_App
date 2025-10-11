@@ -5,6 +5,7 @@ Update Transaction
 </h1>
 
 <form 
+method="post"
   hx-post="{% url 'update-transaction' transaction.pk %}" 
   hx-push-url="/transactions"
   >

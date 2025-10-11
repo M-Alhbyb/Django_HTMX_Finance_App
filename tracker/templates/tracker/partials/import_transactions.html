@@ -45,3 +45,11 @@ Import Transactions
   </div>
 </form>
 
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfInput) {
+                event.detail.headers['X-CSRFToken'] = csrfInput.value;
+            }
+        });
+    </script>

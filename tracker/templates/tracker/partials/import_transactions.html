@@ -7,9 +7,9 @@ Import Transactions
 <form 
   class=""
   hx-encoding="multipart/form-data"
-  hx-post="{% url 'import' %}"
+  hx-post="{% url 'import' %}">
 
-  >
+ {% csrf_token %} 
   <span class="block mt-2 text-xs text-black font-bold" >
     Choose CSV File
   </span>

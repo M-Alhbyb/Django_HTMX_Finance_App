@@ -24,7 +24,6 @@
 {% endif %}
 
 <form class="signup w-[100%] md:w-[50%]" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
 
   <div class="mb-4">
     {{ form.username|add_label_class:"text-white mb-4" }}

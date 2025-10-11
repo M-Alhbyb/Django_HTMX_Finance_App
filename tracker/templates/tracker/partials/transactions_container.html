@@ -266,7 +266,7 @@
   </script>
 {% endif %}
 
-<script>
+<!-- <script>
   const toggleBtn = document.getElementById("filter-toggle");
   const form = document.getElementById("formContainer");
   let visible = false;
@@ -275,5 +275,24 @@
     visible = !visible;
     form.classList.toggle("hidden", !visible);
     toggleBtn.textContent = visible ? "Hide Filters" : "Show Filters";
+  });
+</script> -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("filter-toggle");
+    const form = document.getElementById("formContainer");
+
+    if (!toggleBtn || !form) {
+      console.error("Missing #filter-toggle or #formContainer element.");
+      return;
+    }
+
+    let visible = false;
+
+    toggleBtn.addEventListener("click", () => {
+      visible = !visible;
+      form.classList.toggle("hidden", !visible);
+      toggleBtn.textContent = visible ? "Hide Filters" : "Show Filters";
+    });
   });
 </script>

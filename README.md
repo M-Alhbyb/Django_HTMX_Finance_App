@@ -95,8 +95,17 @@ python manage.py runserver
 ---
 
 ## 🖼️ Screenshots
+<img src="https://github.com/M-Alhbyb/Django_HTMX_Finance_App/blob/demos/demos/1.png" width="650">
 
-*(Add screenshots here after deployment)*
+
+<img src="https://github.com/M-Alhbyb/Django_HTMX_Finance_App/blob/demos/demos/2.png" width="650">
+
+
+<img src="https://github.com/M-Alhbyb/Django_HTMX_Finance_App/blob/demos/demos/3.png" width="650">
+
+
+<img src="https://github.com/M-Alhbyb/Django_HTMX_Finance_App/blob/demos/demos/4.png" width="650">
+
 
 ---
 
